@@ -1,0 +1,63 @@
+自动打卡program  v1.1
+
+思路：通过selenium进行模拟手动打卡
+-------------------------------------------
+准备
+	①selenium库
+	②chrome driver
+	③环境变量
+-------------------------------------------
+代码
+
+# 加载库
+from selenium import webdriver
+import time
+
+# 进入浏览器设置
+options = webdriver.ChromeOptions()
+
+# 更换user agent 变成手机模式
+options.add_argument('user-agent=Mozilla/5.0 (Linux; Android 9; V1838A Build/PKQ1.190302.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/76.0.3809.89 Mobile Safari/537.36 T7/11.20 SP-engine/2.16.0 baiduboxapp/11.20.0.14 (Baidu; P1 9)')
+
+# 打开浏览器  进入打卡网站
+browser = webdriver.Chrome(options=options)
+url = "https://xsc-health.wh.sdu.edu.cn/mobile/index.html?a=b#/common/office/fightncp/home"
+browser.get(url)
+
+# 准备密码
+name = "202000820110"
+word = 'whsdu@202000820110'
+time.sleep(2)
+
+# 获取用户名的id并输入
+username = browser.find_element_by_name('username')
+username.send_keys(name)
+
+# 获取密码的id并输入
+username = browser.find_element_by_name('password')
+username.send_keys(word)
+time.sleep(3)
+
+# 点击登录
+browser.find_element_by_class_name('weui-btn-area').click()
+time.sleep(3)
+
+# 进入打卡
+browser.find_element_by_xpath("//*[contains(text(),'打卡')]").click()
+time.sleep(3)
+
+# 提交打卡
+browser.find_element_by_xpath("//*[contains(text(),'提交')]").click()
+time.sleep(5)
+
+# 关闭浏览器
+browser.quit()
+
+-------------------------------------------
+bug
+	10.16	电脑无法打开打卡网站，需要设置useragent
+	10.17	无法定位会造成元素遮挡，无法找到提交元素
+			解决思路：用ec查找定位失败这个关键字，获得返回值。使用if语句：如果未出现关键字，那么就继续，如果出现，点击关闭，然后继续
+-------------------------------------------
+
+
